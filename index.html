@@ -49,33 +49,24 @@
       background: white;
       border: none;
       border-radius: 16px;
-      /* ✨ NEW GLOW EFFECT: Multi-layered box shadow */
+      /* GLOW EFFECT */
       box-shadow:
         0 0 10px hotpink,
-        /* Inner soft glow */
         0 0 20px hotpink,
-        /* Medium glow */
         0 0 40px hotpink,
-        /* Stronger glow */
         0 0 80px hotpink,
-        /* Outer massive glow */
         0 10px 25px rgba(0, 0, 0, 0.5);
-      /* Retain some original shadow for lift */
-      /* ------------------------------------------- */
       cursor: pointer;
-      font-weight: 800;
+      font-weight: 400;
       color: #59008c;
       font-family: "Monoton", sans-serif;
-      font-weight: 400;
       font-style: normal;
       text-transform: uppercase;
       letter-spacing: 2px;
       touch-action: manipulation;
       transition: all 0.3s ease;
-      /* Add transition for a smoother hover/active effect */
     }
 
-    /* Optional: Add a slight press effect for extra visual feedback */
     #start-button:active {
       transform: scale(0.98);
       box-shadow:
@@ -96,6 +87,9 @@
       text-shadow: 0 0 10px hotpink, 0 0 20px hotpink, 0 0 100px hotpink;
     }
 
+    /* ----------------------------------------------------- */
+    /* DEFAULT/DESKTOP STYLES (18 White Keys: C3 to F5) */
+    /* ----------------------------------------------------- */
     #piano {
       position: relative;
       display: none;
@@ -104,14 +98,9 @@
       margin: 0 auto;
     }
 
-    #white-keys {
-      display: flex;
-      gap: 0;
-    }
-
     .white-key {
-      /* CORRECTED: Removed Markdown bolding */
       width: 5.5555%;
+      /* 100% / 18 keys */
       height: 192px;
       background: rgb(248, 212, 255);
       border: 2px solid #1f2937;
@@ -122,6 +111,56 @@
       z-index: 1;
       transition: all 0.1s ease;
       touch-action: manipulation;
+    }
+
+    .black-key {
+      width: 3.7037%;
+      /* (100% / 18) * (2/3) */
+      height: 128px;
+      background: #59008c;
+      border: 2px solid #030712;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      position: absolute;
+      z-index: 2;
+      pointer-events: auto;
+      transition: all 0.1s ease;
+      touch-action: manipulation;
+    }
+
+    /* ----------------------------------------------------- */
+    /* MOBILE OPTIMIZATION (15 White Keys: C3 to C5) */
+    /* ----------------------------------------------------- */
+    @media screen and (max-width: 700px) {
+      #piano {
+        width: 100%;
+      }
+
+      /* Redefine the key widths for 15 white keys (C3 to C5) */
+      .white-key {
+        width: 6.6666%;
+        /* 100% / 15 keys */
+        height: 160px;
+      }
+
+      /* The black key width remains 2/3 of the white key width */
+      .black-key {
+        width: 4.4444%;
+        /* (100% / 15) * (2/3) */
+        height: 106px;
+      }
+
+      .white-key span {
+        font-size: 8px;
+        bottom: 10px;
+      }
+    }
+
+    /* Common Key Styles */
+    #white-keys {
+      display: flex;
+      gap: 0;
     }
 
     .white-key:active,
@@ -154,22 +193,6 @@
       width: 100%;
     }
 
-    .black-key {
-      /* CORRECTED: Removed Markdown bolding */
-      width: 3.7037%;
-      height: 128px;
-      background: #59008c;
-      border: 2px solid #030712;
-      border-radius: 0 0 8px 8px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      position: absolute;
-      z-index: 2;
-      pointer-events: auto;
-      transition: all 0.1s ease;
-      touch-action: manipulation;
-    }
-
     .black-key:active,
     .black-key.pressed {
       background: hotpink;
@@ -185,11 +208,7 @@
   </div>
 
   <h1 id="title">🎹👩🏼‍🎤 Synthy Sisters 👯‍♀️🎶</h1>
-
-
   <div id="piano">
-
-
     <div id="white-keys"></div>
     <div id="black-keys"></div>
   </div>
@@ -224,13 +243,20 @@
       { note: 'A4', freq: 880.00 },
       { note: 'A#4', freq: 932.33 },
       { note: 'B4', freq: 987.77 },
-      // Half octave
-      { note: 'C5', freq: 1046.50 },
+      // Octave 3 (C5 is the key that completes the 2-octave range)
+      { note: 'C5', freq: 1046.50 }, // Index 24
       { note: 'C#5', freq: 1108.73 },
       { note: 'D5', freq: 1174.66 },
       { note: 'D#5', freq: 1244.51 },
       { note: 'E5', freq: 1318.51 },
       { note: 'F5', freq: 1396.91 },
+      { note: 'F#5', freq: 1479.98 },
+      { note: 'G5', freq: 1567.98 },
+      { note: 'G#5', freq: 1661.22 },
+      { note: 'A5', freq: 1760.00 },
+      { note: 'A#5', freq: 1864.66 },
+      { note: 'B5', freq: 1975.53 },
+      { note: 'C6', freq: 2093.00 },
     ];
 
     function playNote(frequency, button) {
@@ -239,7 +265,6 @@
       }
 
       try {
-        // Add visual feedback
         button.classList.add('pressed');
         setTimeout(() => button.classList.remove('pressed'), 200);
 
@@ -262,56 +287,40 @@
       }
     }
 
-    // Initialize on start button click
-    document.getElementById('start-button').addEventListener('click', function () {
-      try {
-        // Create audio context
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-        // Resume if suspended (iOS requirement)
-        if (audioContext.state === 'suspended') {
-          audioContext.resume();
-        }
-
-        // Play a silent note to fully initialize
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        gain.gain.value = 0;
-        osc.connect(gain);
-        gain.connect(audioContext.destination);
-        osc.start();
-        osc.stop(audioContext.currentTime + 0.001);
-
-        // Build the keyboard
-        buildKeyboard();
-
-        // Show piano
-        document.getElementById('start-screen').style.display = 'none';
-        document.getElementById('piano').style.display = 'block';
-      } catch (error) {
-        alert('Error initializing audio: ' + error.message);
-      }
-    });
-
-    function buildKeyboard() {
+    // NEW: Function to handle building/rebuilding the keyboard based on screen size
+    function initPiano() {
       const whiteKeysContainer = document.getElementById('white-keys');
       const blackKeysContainer = document.getElementById('black-keys');
 
+      // Clear existing keys before building (critical for resizing)
+      whiteKeysContainer.innerHTML = '';
+      blackKeysContainer.innerHTML = '';
+
       let whiteKeyPosition = 0;
 
-      // NEW: Responsive Width Constants for Black Key Positioning
-      const TOTAL_WHITE_KEYS = 18;
+      // 1. DETERMINE WHICH KEYS TO DISPLAY BASED ON SCREEN WIDTH
+      const isNarrowScreen = window.innerWidth <= 700;
+      let keysToDisplay = keys;
+
+      if (isNarrowScreen) {
+        // Show C3 up to C5 (index 0 to 24 inclusive, making 15 white keys total)
+        keysToDisplay = keys.slice(0, 25);
+      }
+
+      // 2. CALCULATE WIDTH CONSTANTS
+      const TOTAL_WHITE_KEYS = keysToDisplay.filter((key) => !key.note.includes('#')).length;
+
       const WHITE_KEY_WIDTH_PERCENT = 100 / TOTAL_WHITE_KEYS;
       const BLACK_KEY_WIDTH_PERCENT = (WHITE_KEY_WIDTH_PERCENT * 2) / 3;
 
-      keys.forEach((key) => {
+      // 3. BUILD THE KEYBOARD
+      keysToDisplay.forEach((key) => {
         const isSharp = key.note.includes('#');
 
         if (!isSharp) {
           const button = document.createElement('button');
           button.className = 'white-key';
 
-          // Use touchstart/click
           button.addEventListener('touchstart', function (e) {
             e.preventDefault();
             playNote(key.freq, button);
@@ -335,7 +344,6 @@
 
           button.style.left = `${leftPositionPercent}%`;
 
-          // Use touchstart/click
           button.addEventListener('touchstart', function (e) {
             e.preventDefault();
             playNote(key.freq, button);
@@ -348,6 +356,49 @@
         }
       });
     }
+
+    // Initialize on start button click
+    document.getElementById('start-button').addEventListener('click', function () {
+      try {
+        // Only initialize AudioContext once
+        if (!audioContext) {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioContext.state === 'suspended') {
+            audioContext.resume();
+          }
+          // Play a silent note to fully initialize
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          gain.gain.value = 0;
+          osc.connect(gain);
+          gain.connect(audioContext.destination);
+          osc.start();
+          osc.stop(audioContext.currentTime + 0.001);
+        }
+
+        // Build the keyboard based on current screen size
+        initPiano();
+
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('piano').style.display = 'block';
+
+      } catch (error) {
+        alert('Error initializing audio: ' + error.message);
+      }
+    });
+
+    // NEW: Listen for device rotation and window resize events
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+      // Debounce the event to prevent excessive calls during continuous resizing/rotation
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        // Only rebuild if the piano is currently visible (i.e., start button was pressed)
+        if (document.getElementById('piano').style.display === 'block') {
+          initPiano();
+        }
+      }, 200); // 200ms delay to wait for the resize/rotate to settle
+    });
   </script>
 </body>
 
