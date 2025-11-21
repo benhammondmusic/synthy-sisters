@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Simple Piano</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #a78bfa 0%, #f9a8d4 50%, #93c5fd 100%);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    #piano {
+      position: relative;
+    }
+
+    #white-keys {
+      display: flex;
+      gap: 0;
+    }
+
+    .white-key {
+      width: 44px;
+      height: 192px;
+      background: white;
+      border: 2px solid #1f2937;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      transition: background-color 0.15s;
+    }
+
+    .white-key:active {
+      background: #e5e7eb;
+    }
+
+    .white-key span {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #4b5563;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    #black-keys {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      gap: 0;
+      pointer-events: none;
+    }
+
+    .black-key {
+      width: 28px;
+      height: 128px;
+      background: #111827;
+      border: 2px solid #030712;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      position: absolute;
+      z-index: 2;
+      pointer-events: auto;
+      transition: background-color 0.15s;
+    }
+
+    .black-key:active {
+      background: #374151;
+    }
+  </style>
+</head>
+<body>
+  <div id="piano">
+    <div id="white-keys"></div>
+    <div id="black-keys"></div>
+  </div>
+
+  <script>
+    let audioContext = null;
+
+    function playNote(frequency) {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 1);
+    }
+
+    const keys = [
+      // Octave 1
+      { note: 'C', freq: 130.81 },
+      { note: 'C#', freq: 138.59 },
+      { note: 'D', freq: 146.83 },
+      { note: 'D#', freq: 155.56 },
+      { note: 'E', freq: 164.81 },
+      { note: 'F', freq: 174.61 },
+      { note: 'F#', freq: 185.00 },
+      { note: 'G', freq: 196.00 },
+      { note: 'G#', freq: 207.65 },
+      { note: 'A', freq: 220.00 },
+      { note: 'A#', freq: 233.08 },
+      { note: 'B', freq: 246.94 },
+      // Octave 2
+      { note: 'C', freq: 261.63 },
+      { note: 'C#', freq: 277.18 },
+      { note: 'D', freq: 293.66 },
+      { note: 'D#', freq: 311.13 },
+      { note: 'E', freq: 329.63 },
+      { note: 'F', freq: 349.23 },
+      { note: 'F#', freq: 369.99 },
+      { note: 'G', freq: 392.00 },
+      { note: 'G#', freq: 415.30 },
+      { note: 'A', freq: 440.00 },
+      { note: 'A#', freq: 466.16 },
+      { note: 'B', freq: 493.88 },
+      // Octave 3
+      { note: 'C', freq: 523.25 },
+      { note: 'C#', freq: 554.37 },
+      { note: 'D', freq: 587.33 },
+      { note: 'D#', freq: 622.25 },
+      { note: 'E', freq: 659.25 },
+      { note: 'F', freq: 698.46 },
+      { note: 'F#', freq: 739.99 },
+      { note: 'G', freq: 783.99 },
+      { note: 'G#', freq: 830.61 },
+      { note: 'A', freq: 880.00 },
+      { note: 'A#', freq: 932.33 },
+      { note: 'B', freq: 987.77 },
+      { note: 'C', freq: 1046.50 },
+    ];
+
+    const whiteKeysContainer = document.getElementById('white-keys');
+    const blackKeysContainer = document.getElementById('black-keys');
+
+    let whiteKeyPosition = 0;
+
+    keys.forEach((key, index) => {
+      const isSharp = key.note.includes('#');
+
+      if (!isSharp) {
+        const button = document.createElement('button');
+        button.className = 'white-key';
+        button.onclick = () => playNote(key.freq);
+
+        const span = document.createElement('span');
+        span.textContent = key.note;
+        button.appendChild(span);
+
+        whiteKeysContainer.appendChild(button);
+        whiteKeyPosition++;
+      } else {
+        const button = document.createElement('button');
+        button.className = 'black-key';
+        button.onclick = () => playNote(key.freq);
+        button.style.left = `${whiteKeyPosition * 44 - 14}px`;
+
+        blackKeysContainer.appendChild(button);
+      }
+    });
+  </script>
+</body>
+</html>
