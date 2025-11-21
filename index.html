@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Simple Piano</title>
@@ -57,19 +57,22 @@
     .white-key {
       width: 44px;
       height: 192px;
-      background: white;
+      background: rgb(248, 212, 255);
       border: 2px solid #1f2937;
       border-radius: 0 0 8px 8px;
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       position: relative;
       z-index: 1;
-      transition: background-color 0.15s;
+      transition: all 0.1s ease;
       touch-action: manipulation;
     }
 
-    .white-key:active {
-      background: #e5e7eb;
+    .white-key:active,
+    .white-key.pressed {
+      background: hotpink;
+      transform: translateY(2px);
+      box-shadow: 0 5px 10px -3px rgba(0, 0, 0, 0.2);
     }
 
     .white-key span {
@@ -78,9 +81,10 @@
       left: 50%;
       transform: translateX(-50%);
       color: #4b5563;
-      font-weight: 600;
-      font-size: 18px;
+      font-weight: 400;
+      font-size: 1px;
       pointer-events: none;
+      user-select: none;
     }
 
     #black-keys {
@@ -95,7 +99,7 @@
     .black-key {
       width: 28px;
       height: 128px;
-      background: #111827;
+      background: #59008c;
       border: 2px solid #030712;
       border-radius: 0 0 8px 8px;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
@@ -103,12 +107,15 @@
       position: absolute;
       z-index: 2;
       pointer-events: auto;
-      transition: background-color 0.15s;
+      transition: all 0.1s ease;
       touch-action: manipulation;
     }
 
-    .black-key:active {
-      background: #374151;
+    .black-key:active,
+    .black-key.pressed {
+      background: hotpink;
+      transform: translateY(2px);
+      box-shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
@@ -127,19 +134,6 @@
 
     const keys = [
       // Octave 1
-      { note: 'C', freq: 130.81 },
-      { note: 'C#', freq: 138.59 },
-      { note: 'D', freq: 146.83 },
-      { note: 'D#', freq: 155.56 },
-      { note: 'E', freq: 164.81 },
-      { note: 'F', freq: 174.61 },
-      { note: 'F#', freq: 185.00 },
-      { note: 'G', freq: 196.00 },
-      { note: 'G#', freq: 207.65 },
-      { note: 'A', freq: 220.00 },
-      { note: 'A#', freq: 233.08 },
-      { note: 'B', freq: 246.94 },
-      // Octave 2
       { note: 'C', freq: 261.63 },
       { note: 'C#', freq: 277.18 },
       { note: 'D', freq: 293.66 },
@@ -152,7 +146,7 @@
       { note: 'A', freq: 440.00 },
       { note: 'A#', freq: 466.16 },
       { note: 'B', freq: 493.88 },
-      // Octave 3
+      // Octave 2
       { note: 'C', freq: 523.25 },
       { note: 'C#', freq: 554.37 },
       { note: 'D', freq: 587.33 },
@@ -165,15 +159,25 @@
       { note: 'A', freq: 880.00 },
       { note: 'A#', freq: 932.33 },
       { note: 'B', freq: 987.77 },
+      // Half octave
       { note: 'C', freq: 1046.50 },
+      { note: 'C#', freq: 1108.73 },
+      { note: 'D', freq: 1174.66 },
+      { note: 'D#', freq: 1244.51 },
+      { note: 'E', freq: 1318.51 },
+      { note: 'F', freq: 1396.91 },
     ];
 
-    function playNote(frequency) {
+    function playNote(frequency, button) {
       if (!audioContext) {
         return;
       }
 
       try {
+        // Add visual feedback
+        button.classList.add('pressed');
+        setTimeout(() => button.classList.remove('pressed'), 200);
+
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
 
@@ -240,10 +244,10 @@
           // Use touchstart for better iOS response
           button.addEventListener('touchstart', function(e) {
             e.preventDefault();
-            playNote(key.freq);
+            playNote(key.freq, button);
           });
           button.addEventListener('click', function() {
-            playNote(key.freq);
+            playNote(key.freq, button);
           });
 
           const span = document.createElement('span');
@@ -260,10 +264,10 @@
           // Use touchstart for better iOS response
           button.addEventListener('touchstart', function(e) {
             e.preventDefault();
-            playNote(key.freq);
+            playNote(key.freq, button);
           });
           button.addEventListener('click', function() {
-            playNote(key.freq);
+            playNote(key.freq, button);
           });
 
           blackKeysContainer.appendChild(button);
