@@ -199,6 +199,15 @@
       transform: translateY(2px);
       box-shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.2);
     }
+
+    #notice {
+      font-size: clamp(14px, 2vw, 12px);
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      margin: 20px 0;
+      font-style: normal;
+    }
   </style>
 </head>
 
@@ -212,6 +221,8 @@
     <div id="white-keys"></div>
     <div id="black-keys"></div>
   </div>
+  <p id="notice">Ensure your device is not on "silent mode".</p>
+
 
   <script>
     let audioContext = null;
