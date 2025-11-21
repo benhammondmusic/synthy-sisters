@@ -202,16 +202,52 @@
 
     #notice {
       font-size: clamp(14px, 2vw, 12px);
+
       color: white;
       text-align: center;
       font-weight: bold;
       margin: 20px 0;
-      font-style: normal;
+      font-style: italic;
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+    }
+
+    #reset-button {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      opacity: 0.6;
+      transition: all 0.3s ease;
+      z-index: 100;
+      touch-action: manipulation;
+    }
+
+    #reset-button:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.5);
+      transform: rotate(180deg);
+    }
+
+    #reset-button:active {
+      transform: scale(0.9) rotate(180deg);
     }
   </style>
 </head>
 
 <body>
+  <button id="reset-button" title="Restart">↻</button>
   <div id="start-screen">
     <button id="start-button">START PLAYING! 🎹</button>
   </div>
@@ -310,7 +346,7 @@
       let whiteKeyPosition = 0;
 
       // 1. DETERMINE WHICH KEYS TO DISPLAY BASED ON SCREEN WIDTH
-      const isNarrowScreen = window.innerWidth <= 700;
+      const isNarrowScreen = window.innerWidth <= window.innerHeight;
       let keysToDisplay = keys;
 
       if (isNarrowScreen) {
@@ -409,6 +445,23 @@
           initPiano();
         }
       }, 200); // 200ms delay to wait for the resize/rotate to settle
+    });
+
+    // Reset button functionality
+    document.getElementById('reset-button').addEventListener('click', function () {
+      // Reset audio context
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+      }
+
+      // Hide piano and show start screen again
+      document.getElementById('piano').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'flex';
+
+      // Clear the keyboard
+      document.getElementById('white-keys').innerHTML = '';
+      document.getElementById('black-keys').innerHTML = '';
     });
   </script>
 </body>
