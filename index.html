@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Rock+Salt&display=swap" rel="stylesheet">
   <title>🎹👩🏼‍🎤Synthy Sisters👯‍♀️🎶</title>
   <style>
     * {
@@ -19,13 +20,14 @@
 
     body {
       display: flex;
-			flex-direction: column;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       background: linear-gradient(135deg, #a78bfa 0%, #f9a8d4 50%, #93c5fd 100%);
       font-family: system-ui, -apple-system, sans-serif;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     #start-screen {
@@ -34,6 +36,11 @@
       justify-content: center;
       min-height: 100vh;
       width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      background: linear-gradient(135deg, #a78bfa 0%, #f9a8d4 50%, #93c5fd 100%);
     }
 
     #start-button {
@@ -42,30 +49,59 @@
       background: white;
       border: none;
       border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      /* ✨ NEW GLOW EFFECT: Multi-layered box shadow */
+      box-shadow:
+        0 0 10px hotpink,
+        /* Inner soft glow */
+        0 0 20px hotpink,
+        /* Medium glow */
+        0 0 40px hotpink,
+        /* Stronger glow */
+        0 0 80px hotpink,
+        /* Outer massive glow */
+        0 10px 25px rgba(0, 0, 0, 0.5);
+      /* Retain some original shadow for lift */
+      /* ------------------------------------------- */
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 800;
+      color: #59008c;
+      font-family: "Monoton", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      text-transform: uppercase;
+      letter-spacing: 2px;
       touch-action: manipulation;
+      transition: all 0.3s ease;
+      /* Add transition for a smoother hover/active effect */
     }
 
-		#title {
-			font-size: 40px;
-			color: white;
-			text-align: center;
-			margin: 20px 0;
-			  font-family: "Rock Salt", cursive;
-  font-weight: 400;
-  font-style: normal;
-	/* add pink hard glow on the letters */
-			text-shadow: 0 0 10px hotpink, 0 0 20px hotpink, 0 0 30px hotpink, 0 0 40px hotpink, 0 0 50px hotpink, 0 0 60px hotpink, 0 0 70px hotpink, 0 0 80px hotpink, 0 0 90px hotpink, 0 0 100px hotpink;
-		}
+    /* Optional: Add a slight press effect for extra visual feedback */
+    #start-button:active {
+      transform: scale(0.98);
+      box-shadow:
+        0 0 5px hotpink,
+        0 0 10px hotpink,
+        0 0 20px hotpink,
+        0 5px 10px rgba(0, 0, 0, 0.4);
+    }
 
-
-
+    #title {
+      font-size: clamp(24px, 5vw, 40px);
+      color: white;
+      text-align: center;
+      margin: 20px 0;
+      font-family: "Rock Salt", cursive;
+      font-weight: 400;
+      font-style: normal;
+      text-shadow: 0 0 10px hotpink, 0 0 20px hotpink, 0 0 100px hotpink;
+    }
 
     #piano {
       position: relative;
       display: none;
+      width: 95%;
+      max-width: 1000px;
+      margin: 0 auto;
     }
 
     #white-keys {
@@ -74,7 +110,8 @@
     }
 
     .white-key {
-      width: 44px;
+      /* CORRECTED: Removed Markdown bolding */
+      width: 5.5555%;
       height: 192px;
       background: rgb(248, 212, 255);
       border: 2px solid #1f2937;
@@ -101,9 +138,10 @@
       transform: translateX(-50%);
       color: #4b5563;
       font-weight: 400;
-      font-size: 12px;
+      font-size: 10px;
       pointer-events: none;
       user-select: none;
+      white-space: nowrap;
     }
 
     #black-keys {
@@ -113,10 +151,12 @@
       display: flex;
       gap: 0;
       pointer-events: none;
+      width: 100%;
     }
 
     .black-key {
-      width: 28px;
+      /* CORRECTED: Removed Markdown bolding */
+      width: 3.7037%;
       height: 128px;
       background: #59008c;
       border: 2px solid #030712;
@@ -138,12 +178,13 @@
     }
   </style>
 </head>
+
 <body>
   <div id="start-screen">
-    <button id="start-button">Tap to Start Piano 🎹</button>
+    <button id="start-button">START PLAYING! 🎹</button>
   </div>
 
-		<h1 id="title">🎹👩🏼‍🎤 Synthy Sisters 👯‍♀️🎶</h1>
+  <h1 id="title">🎹👩🏼‍🎤 Synthy Sisters 👯‍♀️🎶</h1>
 
 
   <div id="piano">
@@ -158,38 +199,38 @@
 
     const keys = [
       // Octave 1
-      { note: 'C', freq: 261.63 },
-      { note: 'C#', freq: 277.18 },
-      { note: 'D', freq: 293.66 },
-      { note: 'D#', freq: 311.13 },
-      { note: 'E', freq: 329.63 },
-      { note: 'F', freq: 349.23 },
-      { note: 'F#', freq: 369.99 },
-      { note: 'G', freq: 392.00 },
-      { note: 'G#', freq: 415.30 },
-      { note: 'A', freq: 440.00 },
-      { note: 'A#', freq: 466.16 },
-      { note: 'B', freq: 493.88 },
+      { note: 'C3', freq: 261.63 },
+      { note: 'C#3', freq: 277.18 },
+      { note: 'D3', freq: 293.66 },
+      { note: 'D#3', freq: 311.13 },
+      { note: 'E3', freq: 329.63 },
+      { note: 'F3', freq: 349.23 },
+      { note: 'F#3', freq: 369.99 },
+      { note: 'G3', freq: 392.00 },
+      { note: 'G#3', freq: 415.30 },
+      { note: 'A3', freq: 440.00 },
+      { note: 'A#3', freq: 466.16 },
+      { note: 'B3', freq: 493.88 },
       // Octave 2
-      { note: 'C', freq: 523.25 },
-      { note: 'C#', freq: 554.37 },
-      { note: 'D', freq: 587.33 },
-      { note: 'D#', freq: 622.25 },
-      { note: 'E', freq: 659.25 },
-      { note: 'F', freq: 698.46 },
-      { note: 'F#', freq: 739.99 },
-      { note: 'G', freq: 783.99 },
-      { note: 'G#', freq: 830.61 },
-      { note: 'A', freq: 880.00 },
-      { note: 'A#', freq: 932.33 },
-      { note: 'B', freq: 987.77 },
+      { note: 'C4', freq: 523.25 },
+      { note: 'C#4', freq: 554.37 },
+      { note: 'D4', freq: 587.33 },
+      { note: 'D#4', freq: 622.25 },
+      { note: 'E4', freq: 659.25 },
+      { note: 'F4', freq: 698.46 },
+      { note: 'F#4', freq: 739.99 },
+      { note: 'G4', freq: 783.99 },
+      { note: 'G#4', freq: 830.61 },
+      { note: 'A4', freq: 880.00 },
+      { note: 'A#4', freq: 932.33 },
+      { note: 'B4', freq: 987.77 },
       // Half octave
-      { note: 'C', freq: 1046.50 },
-      { note: 'C#', freq: 1108.73 },
-      { note: 'D', freq: 1174.66 },
-      { note: 'D#', freq: 1244.51 },
-      { note: 'E', freq: 1318.51 },
-      { note: 'F', freq: 1396.91 },
+      { note: 'C5', freq: 1046.50 },
+      { note: 'C#5', freq: 1108.73 },
+      { note: 'D5', freq: 1174.66 },
+      { note: 'D#5', freq: 1244.51 },
+      { note: 'E5', freq: 1318.51 },
+      { note: 'F5', freq: 1396.91 },
     ];
 
     function playNote(frequency, button) {
@@ -212,17 +253,17 @@
         oscillator.type = 'sine';
 
         gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
 
         oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 1);
+        oscillator.stop(audioContext.currentTime + 0.8);
       } catch (error) {
         console.error('Error playing note:', error);
       }
     }
 
     // Initialize on start button click
-    document.getElementById('start-button').addEventListener('click', function() {
+    document.getElementById('start-button').addEventListener('click', function () {
       try {
         // Create audio context
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -258,6 +299,11 @@
 
       let whiteKeyPosition = 0;
 
+      // NEW: Responsive Width Constants for Black Key Positioning
+      const TOTAL_WHITE_KEYS = 18;
+      const WHITE_KEY_WIDTH_PERCENT = 100 / TOTAL_WHITE_KEYS;
+      const BLACK_KEY_WIDTH_PERCENT = (WHITE_KEY_WIDTH_PERCENT * 2) / 3;
+
       keys.forEach((key) => {
         const isSharp = key.note.includes('#');
 
@@ -265,17 +311,17 @@
           const button = document.createElement('button');
           button.className = 'white-key';
 
-          // Use touchstart for better iOS response
-          button.addEventListener('touchstart', function(e) {
+          // Use touchstart/click
+          button.addEventListener('touchstart', function (e) {
             e.preventDefault();
             playNote(key.freq, button);
-          });
-          button.addEventListener('click', function() {
+          }, { passive: false });
+          button.addEventListener('click', function () {
             playNote(key.freq, button);
           });
 
           const span = document.createElement('span');
-          span.textContent = key.note;
+          span.textContent = key.note.charAt(0);
           button.appendChild(span);
 
           whiteKeysContainer.appendChild(button);
@@ -283,14 +329,18 @@
         } else {
           const button = document.createElement('button');
           button.className = 'black-key';
-          button.style.left = `${whiteKeyPosition * 44 - 14}px`;
 
-          // Use touchstart for better iOS response
-          button.addEventListener('touchstart', function(e) {
+          // Calculate the responsive left position in percentage
+          const leftPositionPercent = (whiteKeyPosition * WHITE_KEY_WIDTH_PERCENT) - (BLACK_KEY_WIDTH_PERCENT / 2);
+
+          button.style.left = `${leftPositionPercent}%`;
+
+          // Use touchstart/click
+          button.addEventListener('touchstart', function (e) {
             e.preventDefault();
             playNote(key.freq, button);
-          });
-          button.addEventListener('click', function() {
+          }, { passive: false });
+          button.addEventListener('click', function () {
             playNote(key.freq, button);
           });
 
@@ -300,4 +350,5 @@
     }
   </script>
 </body>
+
 </html>
