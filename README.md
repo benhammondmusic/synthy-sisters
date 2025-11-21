@@ -20,8 +20,8 @@ This project is built using only standard web technologies: HTML, CSS, and vanil
 
 The keyboard automatically adjusts its size and key count to be playable on different devices:
 
-* **Small Screens ($\le 700$px):** The piano displays **15 white keys** (C3 up to C5). This makes the individual keys wider and easier for small fingers to tap.
-* **Wide Screens ($> 700$px):** The piano displays the full **18 keys**.
+* **Small Screens (<700px):** The piano displays **15 white keys** (C3 up to C5). This makes the individual keys wider and easier for small fingers to tap.
+* **Wide Screens (>700px):** The piano displays the full **18 keys**.
 * **Screen Rotation:** If you rotate your phone or tablet, the keyboard automatically detects the change and redraws the keys to fit the new width.
 
 ***
