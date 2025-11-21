@@ -87,13 +87,29 @@
   </style>
 </head>
 <body>
-  <div id="piano">
+  <div id="start-screen" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #a78bfa 0%, #f9a8d4 50%, #93c5fd 100%);">
+    <button id="start-button" style="padding: 20px 40px; font-size: 24px; background: white; border: none; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; font-weight: 600;">
+      Tap to Start Piano 🎹
+    </button>
+  </div>
+
+  <div id="piano" style="display: none;">
     <div id="white-keys"></div>
     <div id="black-keys"></div>
   </div>
 
   <script>
     let audioContext = null;
+
+    // Show piano after user taps start
+    document.getElementById('start-button').onclick = function() {
+      // Initialize audio context on user interaction
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+      // Hide start screen, show piano
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('piano').style.display = 'block';
+    };
 
     function playNote(frequency) {
       if (!audioContext) {
