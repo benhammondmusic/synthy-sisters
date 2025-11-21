@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Simple Piano</title>
@@ -11,6 +11,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -20,10 +21,32 @@
       min-height: 100vh;
       background: linear-gradient(135deg, #a78bfa 0%, #f9a8d4 50%, #93c5fd 100%);
       font-family: system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+    }
+
+    #start-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    #start-button {
+      padding: 30px 60px;
+      font-size: 28px;
+      background: white;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      cursor: pointer;
+      font-weight: 600;
+      touch-action: manipulation;
     }
 
     #piano {
       position: relative;
+      display: none;
     }
 
     #white-keys {
@@ -42,6 +65,7 @@
       position: relative;
       z-index: 1;
       transition: background-color 0.15s;
+      touch-action: manipulation;
     }
 
     .white-key:active {
@@ -56,6 +80,7 @@
       color: #4b5563;
       font-weight: 600;
       font-size: 18px;
+      pointer-events: none;
     }
 
     #black-keys {
@@ -79,6 +104,7 @@
       z-index: 2;
       pointer-events: auto;
       transition: background-color 0.15s;
+      touch-action: manipulation;
     }
 
     .black-key:active {
@@ -87,50 +113,17 @@
   </style>
 </head>
 <body>
-  <div id="start-screen" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #a78bfa 0%, #f9a8d4 50%, #93c5fd 100%);">
-    <button id="start-button" style="padding: 20px 40px; font-size: 24px; background: white; border: none; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; font-weight: 600;">
-      Tap to Start Piano 🎹
-    </button>
+  <div id="start-screen">
+    <button id="start-button">Tap to Start Piano 🎹</button>
   </div>
 
-  <div id="piano" style="display: none;">
+  <div id="piano">
     <div id="white-keys"></div>
     <div id="black-keys"></div>
   </div>
 
   <script>
     let audioContext = null;
-
-    // Show piano after user taps start
-    document.getElementById('start-button').onclick = function() {
-      // Initialize audio context on user interaction
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-      // Hide start screen, show piano
-      document.getElementById('start-screen').style.display = 'none';
-      document.getElementById('piano').style.display = 'block';
-    };
-
-    function playNote(frequency) {
-      if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      }
-
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-
-      oscillator.frequency.value = frequency;
-      oscillator.type = 'sine';
-
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
-
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 1);
-    }
 
     const keys = [
       // Octave 1
@@ -175,34 +168,108 @@
       { note: 'C', freq: 1046.50 },
     ];
 
-    const whiteKeysContainer = document.getElementById('white-keys');
-    const blackKeysContainer = document.getElementById('black-keys');
+    function playNote(frequency) {
+      if (!audioContext) {
+        return;
+      }
 
-    let whiteKeyPosition = 0;
+      try {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
 
-    keys.forEach((key, index) => {
-      const isSharp = key.note.includes('#');
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
 
-      if (!isSharp) {
-        const button = document.createElement('button');
-        button.className = 'white-key';
-        button.onclick = () => playNote(key.freq);
+        oscillator.frequency.value = frequency;
+        oscillator.type = 'sine';
 
-        const span = document.createElement('span');
-        span.textContent = key.note;
-        button.appendChild(span);
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
 
-        whiteKeysContainer.appendChild(button);
-        whiteKeyPosition++;
-      } else {
-        const button = document.createElement('button');
-        button.className = 'black-key';
-        button.onclick = () => playNote(key.freq);
-        button.style.left = `${whiteKeyPosition * 44 - 14}px`;
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 1);
+      } catch (error) {
+        console.error('Error playing note:', error);
+      }
+    }
 
-        blackKeysContainer.appendChild(button);
+    // Initialize on start button click
+    document.getElementById('start-button').addEventListener('click', function() {
+      try {
+        // Create audio context
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Resume if suspended (iOS requirement)
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+
+        // Play a silent note to fully initialize
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        gain.gain.value = 0;
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.001);
+
+        // Build the keyboard
+        buildKeyboard();
+
+        // Show piano
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('piano').style.display = 'block';
+      } catch (error) {
+        alert('Error initializing audio: ' + error.message);
       }
     });
+
+    function buildKeyboard() {
+      const whiteKeysContainer = document.getElementById('white-keys');
+      const blackKeysContainer = document.getElementById('black-keys');
+
+      let whiteKeyPosition = 0;
+
+      keys.forEach((key) => {
+        const isSharp = key.note.includes('#');
+
+        if (!isSharp) {
+          const button = document.createElement('button');
+          button.className = 'white-key';
+
+          // Use touchstart for better iOS response
+          button.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            playNote(key.freq);
+          });
+          button.addEventListener('click', function() {
+            playNote(key.freq);
+          });
+
+          const span = document.createElement('span');
+          span.textContent = key.note;
+          button.appendChild(span);
+
+          whiteKeysContainer.appendChild(button);
+          whiteKeyPosition++;
+        } else {
+          const button = document.createElement('button');
+          button.className = 'black-key';
+          button.style.left = `${whiteKeyPosition * 44 - 14}px`;
+
+          // Use touchstart for better iOS response
+          button.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            playNote(key.freq);
+          });
+          button.addEventListener('click', function() {
+            playNote(key.freq);
+          });
+
+          blackKeysContainer.appendChild(button);
+        }
+      });
+    }
   </script>
 </body>
 </html>
