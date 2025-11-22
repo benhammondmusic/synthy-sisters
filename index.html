@@ -454,6 +454,19 @@
   </style>
 </head>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(function (registration) {
+      console.log('Service Worker registered');
+      setInterval(function () {
+        registration.update();
+      }, 30000);
+    }).catch(function (error) {
+      console.log('Service Worker registration failed:', error);
+    });
+  }
+</script>
+
 <body>
   <div id="app-title">SynthySisters</div>
   <button id="help-button" title="Help"></button>
