@@ -32,6 +32,57 @@
       overflow-y: auto;
     }
 
+    #user-select-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 11;
+      background: linear-gradient(135deg, #a78bfa 0%, #f9a8d4 50%, #93c5fd 100%);
+      gap: 30px;
+    }
+
+    .user-button {
+      padding: 25px 50px;
+      font-size: 32px;
+      background: white;
+      border: none;
+      border-radius: 16px;
+      box-shadow:
+        0 0 10px hotpink,
+        0 0 20px hotpink,
+        0 0 40px hotpink,
+        0 10px 25px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      font-weight: bold;
+      font-family: "Rock Salt", cursive;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      touch-action: manipulation;
+      transition: all 0.3s ease;
+    }
+
+    .user-button.nora {
+      color: #ff1493;
+    }
+
+    .user-button.emma {
+      color: #9370db;
+    }
+
+    .user-button:active {
+      transform: scale(0.95);
+      box-shadow:
+        0 0 5px hotpink,
+        0 0 10px hotpink,
+        0 5px 10px rgba(0, 0, 0, 0.4);
+    }
+
     #start-screen {
       display: flex;
       align-items: center;
@@ -51,7 +102,6 @@
       background: white;
       border: none;
       border-radius: 16px;
-      /* GLOW EFFECT */
       box-shadow:
         0 0 10px hotpink,
         0 0 20px hotpink,
@@ -78,20 +128,82 @@
         0 5px 10px rgba(0, 0, 0, 0.4);
     }
 
-    #title {
-      font-size: clamp(24px, 5vw, 40px);
-      color: white;
+    #user-name {
+      font-size: clamp(40px, 8vw, 80px);
       text-align: center;
       margin: 20px 0;
       font-family: "Rock Salt", cursive;
-      font-weight: 400;
-      font-style: normal;
-      text-shadow: 0 0 10px hotpink, 0 0 20px hotpink, 0 0 100px hotpink;
+      font-weight: 700;
+      display: none;
+      letter-spacing: 8px;
     }
 
-    /* ----------------------------------------------------- */
-    /* DEFAULT/DESKTOP STYLES (18 White Keys: C3 to F5) */
-    /* ----------------------------------------------------- */
+    #user-name.show {
+      display: block;
+    }
+
+    #user-name span {
+      display: inline-block;
+      text-shadow:
+        3px 3px 0px rgba(0, 0, 0, 0.1),
+        0 0 20px currentColor;
+      animation: float 2s ease-in-out infinite;
+      margin: 0 2px;
+    }
+
+    #user-name span:nth-child(1) {
+      color: #ff6b9d;
+      animation-delay: 0s;
+    }
+
+    #user-name span:nth-child(2) {
+      color: #ffa07a;
+      animation-delay: 0.1s;
+    }
+
+    #user-name span:nth-child(3) {
+      color: #ffd700;
+      animation-delay: 0.2s;
+    }
+
+    #user-name span:nth-child(4) {
+      color: #98fb98;
+      animation-delay: 0.3s;
+    }
+
+    #user-name span:nth-child(5) {
+      color: #87ceeb;
+      animation-delay: 0.4s;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0px) scale(1);
+      }
+
+      50% {
+        transform: translateY(-20px) scale(1.1);
+      }
+    }
+
+    #user-name.bounce span {
+      animation: bounce 0.6s ease;
+    }
+
     #piano {
       position: relative;
       display: none;
@@ -102,7 +214,6 @@
 
     .white-key {
       width: 5.5555%;
-      /* 100% / 18 keys */
       height: 192px;
       background: rgb(248, 212, 255);
       border: 2px solid #1f2937;
@@ -117,7 +228,6 @@
 
     .black-key {
       width: 3.7037%;
-      /* (100% / 18) * (2/3) */
       height: 128px;
       background: #59008c;
       border: 2px solid #030712;
@@ -131,25 +241,18 @@
       touch-action: manipulation;
     }
 
-    /* ----------------------------------------------------- */
-    /* MOBILE OPTIMIZATION (15 White Keys: C3 to C5) */
-    /* ----------------------------------------------------- */
     @media screen and (max-width: 700px) {
       #piano {
         width: 100%;
       }
 
-      /* Redefine the key widths for 15 white keys (C3 to C5) */
       .white-key {
         width: 6.6666%;
-        /* 100% / 15 keys */
         height: 160px;
       }
 
-      /* The black key width remains 2/3 of the white key width */
       .black-key {
         width: 4.4444%;
-        /* (100% / 15) * (2/3) */
         height: 106px;
       }
 
@@ -159,7 +262,6 @@
       }
     }
 
-    /* Common Key Styles */
     #white-keys {
       display: flex;
       gap: 0;
@@ -204,7 +306,6 @@
 
     #notice {
       font-size: clamp(14px, 2vw, 12px);
-
       color: white;
       text-align: center;
       font-weight: bold;
@@ -220,8 +321,8 @@
       position: fixed;
       top: 10px;
       right: 10px;
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.3);
       border: 2px solid rgba(255, 255, 255, 0.5);
@@ -229,7 +330,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 24px;
       opacity: 0.6;
       transition: all 0.3s ease;
       z-index: 100;
@@ -239,34 +340,153 @@
     #reset-button:hover {
       opacity: 1;
       background: rgba(255, 255, 255, 0.5);
-      transform: rotate(180deg);
     }
 
     #reset-button:active {
-      transform: scale(0.9) rotate(180deg);
+      transform: scale(0.9);
+    }
+
+    #help-button {
+      position: fixed;
+      top: 10px;
+      right: 60px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      opacity: 0.6;
+      transition: all 0.3s ease;
+      z-index: 100;
+      touch-action: manipulation;
+    }
+
+    #help-button:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    #help-button:active {
+      transform: scale(0.9);
+    }
+
+    #help-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+      z-index: 200;
+      max-width: 90%;
+      width: 400px;
+      display: none;
+      text-align: center;
+    }
+
+    #help-popup.show {
+      display: block;
+    }
+
+    #help-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 199;
+      display: none;
+    }
+
+    #help-overlay.show {
+      display: block;
+    }
+
+    #help-popup h3 {
+      font-family: "Rock Salt", cursive;
+      color: #59008c;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    #help-popup p {
+      color: #333;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    #help-popup button {
+      padding: 12px 30px;
+      font-size: 16px;
+      background: linear-gradient(135deg, #a78bfa 0%, #f9a8d4 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      touch-action: manipulation;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #help-popup button:active {
+      transform: scale(0.95);
+    }
+
+    #app-title {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-family: "Rock Salt", cursive;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      z-index: 100;
+      text-shadow: 0 0 5px rgba(255, 105, 180, 0.3);
     }
   </style>
 </head>
 
 <body>
-  <button id="reset-button" title="Restart">↻</button>
-  <div id="start-screen">
-    <button id="start-button">START PLAYING! 🎹</button>
+  <div id="app-title">SynthySisters</div>
+  <button id="help-button" title="Help"></button>
+  <button id="reset-button" title="Switch User">🦄</button>
+
+  <div id="help-overlay"></div>
+  <div id="help-popup">
+    <h3>🔔 Sound Not Working?</h3>
+    <p>If you're using an iOS device (iPhone/iPad), make sure your device is <strong>not in Silent Mode</strong>!</p>
+    <p>Check the physical switch on the side of your device.</p>
+    <button id="close-help">Got it! ✨</button>
   </div>
 
-  <h1 id="title">🎹👩🏼‍🎤 Synthy Sisters 👯‍♀️🎶</h1>
+  <div id="user-select-screen">
+    <h2
+      style="color: white; font-family: 'Rock Salt', cursive; font-size: clamp(24px, 5vw, 36px); margin-bottom: 20px;">
+      Who's Playing? 🎹</h2>
+    <button class="user-button nora" data-user="nora">Nora 🦄</button>
+    <button class="user-button emma" data-user="emma">Emma 🌟</button>
+  </div>
+
+  <div id="user-name"></div>
+
   <div id="piano">
     <div id="white-keys"></div>
     <div id="black-keys"></div>
   </div>
-  <p id="notice">Ensure your device is not on "silent mode".</p>
-
 
   <script>
     let audioContext = null;
+    let currentUser = null;
 
     const keys = [
-      // Octave 1
       { note: 'C3', freq: 261.63 },
       { note: 'C#3', freq: 277.18 },
       { note: 'D3', freq: 293.66 },
@@ -279,7 +499,6 @@
       { note: 'A3', freq: 440.00 },
       { note: 'A#3', freq: 466.16 },
       { note: 'B3', freq: 493.88 },
-      // Octave 2
       { note: 'C4', freq: 523.25 },
       { note: 'C#4', freq: 554.37 },
       { note: 'D4', freq: 587.33 },
@@ -292,8 +511,7 @@
       { note: 'A4', freq: 880.00 },
       { note: 'A#4', freq: 932.33 },
       { note: 'B4', freq: 987.77 },
-      // Octave 3 (C5 is the key that completes the 2-octave range)
-      { note: 'C5', freq: 1046.50 }, // Index 24
+      { note: 'C5', freq: 1046.50 },
       { note: 'C#5', freq: 1108.73 },
       { note: 'D5', freq: 1174.66 },
       { note: 'D#5', freq: 1244.51 },
@@ -308,9 +526,56 @@
       { note: 'C6', freq: 2093.00 },
     ];
 
+    // User selection
+    document.querySelectorAll('.user-button').forEach(button => {
+      button.addEventListener('click', function () {
+        currentUser = this.dataset.user;
+
+        // Initialize audio context
+        if (!audioContext) {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioContext.state === 'suspended') {
+            audioContext.resume();
+          }
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          gain.gain.value = 0;
+          osc.connect(gain);
+          gain.connect(audioContext.destination);
+          osc.start();
+          osc.stop(audioContext.currentTime + 0.001);
+        }
+
+        // Build piano
+        initPiano();
+
+        document.getElementById('user-select-screen').style.display = 'none';
+        document.getElementById('piano').style.display = 'block';
+
+        const userName = document.getElementById('user-name');
+        const name = currentUser.toUpperCase();
+        userName.innerHTML = '';
+
+        for (let i = 0; i < name.length; i++) {
+          const span = document.createElement('span');
+          span.textContent = name[i];
+          userName.appendChild(span);
+        }
+
+        userName.classList.add('show');
+      });
+    });
+
     function playNote(frequency, button) {
       if (!audioContext) {
         return;
+      }
+
+      const userName = document.getElementById('user-name');
+      if (userName.classList.contains('show')) {
+        userName.classList.remove('bounce');
+        void userName.offsetWidth;
+        userName.classList.add('bounce');
       }
 
       try {
@@ -336,46 +601,39 @@
       }
     }
 
-    // NEW: Function to handle building/rebuilding the keyboard based on screen size
     function initPiano() {
       const whiteKeysContainer = document.getElementById('white-keys');
       const blackKeysContainer = document.getElementById('black-keys');
 
-      // Clear existing keys before building (critical for resizing)
       whiteKeysContainer.innerHTML = '';
       blackKeysContainer.innerHTML = '';
 
       let whiteKeyPosition = 0;
 
-      // 1. DETERMINE WHICH KEYS TO DISPLAY BASED ON SCREEN WIDTH
       const isNarrowScreen = window.innerWidth <= window.innerHeight;
       let keysToDisplay = keys;
 
       if (isNarrowScreen) {
-        // Show C3 up to C5 (index 0 to 24 inclusive, making 15 white keys total)
         keysToDisplay = keys.slice(0, 25);
       }
 
-      // 2. CALCULATE WIDTH CONSTANTS
       const TOTAL_WHITE_KEYS = keysToDisplay.filter((key) => !key.note.includes('#')).length;
-
       const WHITE_KEY_WIDTH_PERCENT = 100 / TOTAL_WHITE_KEYS;
       const BLACK_KEY_WIDTH_PERCENT = (WHITE_KEY_WIDTH_PERCENT * 2) / 3;
 
-      // 3. BUILD THE KEYBOARD
       keysToDisplay.forEach((key) => {
         const isSharp = key.note.includes('#');
 
         if (!isSharp) {
           const button = document.createElement('button');
           button.className = 'white-key';
-
           button.dataset.freq = key.freq;
 
           button.addEventListener('touchstart', function (e) {
             e.preventDefault();
             playNote(key.freq, button);
           }, { passive: false });
+
           button.addEventListener('click', function () {
             playNote(key.freq, button);
           });
@@ -389,17 +647,16 @@
         } else {
           const button = document.createElement('button');
           button.className = 'black-key';
-
-          // Calculate the responsive left position in percentage
-          const leftPositionPercent = (whiteKeyPosition * WHITE_KEY_WIDTH_PERCENT) - (BLACK_KEY_WIDTH_PERCENT / 2);
-
-          button.style.left = `${leftPositionPercent}%`;
           button.dataset.freq = key.freq;
+
+          const leftPositionPercent = (whiteKeyPosition * WHITE_KEY_WIDTH_PERCENT) - (BLACK_KEY_WIDTH_PERCENT / 2);
+          button.style.left = `${leftPositionPercent}%`;
 
           button.addEventListener('touchstart', function (e) {
             e.preventDefault();
             playNote(key.freq, button);
           }, { passive: false });
+
           button.addEventListener('click', function () {
             playNote(key.freq, button);
           });
@@ -409,81 +666,43 @@
       });
     }
 
-    // Initialize on start button click
-    document.getElementById('start-button').addEventListener('click', function () {
-      try {
-        // Only initialize AudioContext once
-        if (!audioContext) {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          if (audioContext.state === 'suspended') {
-            audioContext.resume();
-          }
-          // Play a silent note to fully initialize
-          const osc = audioContext.createOscillator();
-          const gain = audioContext.createGain();
-          gain.gain.value = 0;
-          osc.connect(gain);
-          gain.connect(audioContext.destination);
-          osc.start();
-          osc.stop(audioContext.currentTime + 0.001);
-        }
-
-        // Build the keyboard based on current screen size
-        initPiano();
-
-        document.getElementById('start-screen').style.display = 'none';
-        document.getElementById('piano').style.display = 'block';
-
-      } catch (error) {
-        alert('Error initializing audio: ' + error.message);
-      }
-    });
-
-    // NEW: Listen for device rotation and window resize events
     let resizeTimer;
     window.addEventListener('resize', function () {
-      // Debounce the event to prevent excessive calls during continuous resizing/rotation
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        // Only rebuild if the piano is currently visible (i.e., start button was pressed)
         if (document.getElementById('piano').style.display === 'block') {
           initPiano();
         }
-      }, 200); // 200ms delay to wait for the resize/rotate to settle
+      }, 200);
     });
 
-    // Reset button functionality
     document.getElementById('reset-button').addEventListener('click', function () {
-      // Reset audio context
       if (audioContext) {
         audioContext.close();
         audioContext = null;
       }
 
-      // Hide piano and show start screen again
       document.getElementById('piano').style.display = 'none';
-      document.getElementById('start-screen').style.display = 'flex';
+      document.getElementById('user-name').classList.remove('show');
+      document.getElementById('user-select-screen').style.display = 'flex';
 
-      // Clear the keyboard
       document.getElementById('white-keys').innerHTML = '';
       document.getElementById('black-keys').innerHTML = '';
+
+      currentUser = null;
     });
 
-    // Glissando support - track which key was last played to avoid repeats
     let lastPlayedKey = null;
 
     document.addEventListener('touchmove', function (e) {
       e.preventDefault();
 
-      // Get the touch point
       const touch = e.touches[0];
       const element = document.elementFromPoint(touch.clientX, touch.clientY);
 
-      // Check if we're over a key and it's different from the last one
       if (element && (element.classList.contains('white-key') || element.classList.contains('black-key'))) {
         const freq = parseFloat(element.dataset.freq);
 
-        // Only play if it's a different key than last time
         if (freq && element !== lastPlayedKey) {
           playNote(freq, element);
           lastPlayedKey = element;
@@ -492,8 +711,23 @@
     }, { passive: false });
 
     document.addEventListener('touchend', function () {
-      // Reset the last played key when touch ends
       lastPlayedKey = null;
+    });
+
+    // Help popup
+    document.getElementById('help-button').addEventListener('click', function () {
+      document.getElementById('help-overlay').classList.add('show');
+      document.getElementById('help-popup').classList.add('show');
+    });
+
+    document.getElementById('close-help').addEventListener('click', function () {
+      document.getElementById('help-overlay').classList.remove('show');
+      document.getElementById('help-popup').classList.remove('show');
+    });
+
+    document.getElementById('help-overlay').addEventListener('click', function () {
+      document.getElementById('help-overlay').classList.remove('show');
+      document.getElementById('help-popup').classList.remove('show');
     });
   </script>
 </body>
