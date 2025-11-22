@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Rock+Salt&display=swap" rel="stylesheet">
-  <title>Synthy Sisters👯‍♀️</title>
+  <title>SynthySisters</title>
   <style>
     * {
       margin: 0;
@@ -370,6 +370,8 @@
           const button = document.createElement('button');
           button.className = 'white-key';
 
+          button.dataset.freq = key.freq;
+
           button.addEventListener('touchstart', function (e) {
             e.preventDefault();
             playNote(key.freq, button);
@@ -392,6 +394,7 @@
           const leftPositionPercent = (whiteKeyPosition * WHITE_KEY_WIDTH_PERCENT) - (BLACK_KEY_WIDTH_PERCENT / 2);
 
           button.style.left = `${leftPositionPercent}%`;
+          button.dataset.freq = key.freq;
 
           button.addEventListener('touchstart', function (e) {
             e.preventDefault();
@@ -464,6 +467,33 @@
       // Clear the keyboard
       document.getElementById('white-keys').innerHTML = '';
       document.getElementById('black-keys').innerHTML = '';
+    });
+
+    // Glissando support - track which key was last played to avoid repeats
+    let lastPlayedKey = null;
+
+    document.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+
+      // Get the touch point
+      const touch = e.touches[0];
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
+
+      // Check if we're over a key and it's different from the last one
+      if (element && (element.classList.contains('white-key') || element.classList.contains('black-key'))) {
+        const freq = parseFloat(element.dataset.freq);
+
+        // Only play if it's a different key than last time
+        if (freq && element !== lastPlayedKey) {
+          playNote(freq, element);
+          lastPlayedKey = element;
+        }
+      }
+    }, { passive: false });
+
+    document.addEventListener('touchend', function () {
+      // Reset the last played key when touch ends
+      lastPlayedKey = null;
     });
   </script>
 </body>
